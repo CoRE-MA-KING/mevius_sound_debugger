@@ -112,8 +112,10 @@ class SoundDebuggerNode(Node):
                 self.generate_tone(SCALE['re'], 0.1, volume=VOLUME),
                 self.generate_tone(SCALE['mi'], 0.1, volume=VOLUME),
                 self.generate_tone(0          , 0.1, volume=VOLUME),
+                # self.generate_tone(SCALE['re'], 0.1, volume=VOLUME),
+                # self.generate_tone(SCALE['mi'], 0.1, volume=VOLUME),
+                self.generate_tone(SCALE['do'], 0.1, volume=VOLUME),
                 self.generate_tone(SCALE['re'], 0.1, volume=VOLUME),
-                self.generate_tone(SCALE['mi'], 0.1, volume=VOLUME),
             ]
         elif num == 1:
             # スイッチ
@@ -121,7 +123,8 @@ class SoundDebuggerNode(Node):
                 self.generate_tone(SCALE['doH'], 0.1, volume=VOLUME),
                 self.generate_tone(SCALE['si'], 0.1, volume=VOLUME),
                 self.generate_tone(0          , 0.2, volume=VOLUME),
-                self.generate_tone(SCALE['so'], 0.2, volume=VOLUME),
+                # self.generate_tone(SCALE['so'], 0.2, volume=VOLUME),
+                self.generate_tone(SCALE['fa'], 0.2, volume=VOLUME),
             ]
         else:
             return [
@@ -131,21 +134,23 @@ class SoundDebuggerNode(Node):
 
     def generate_dead_sound(self) -> List[np.ndarray]:
         return [
-            self.generate_tone(SCALE['reL'], 0.1, volume=VOLUME),
-            self.generate_tone(0          , 0.1, volume=VOLUME),
-            self.generate_tone(SCALE['reL'], 0.1, volume=VOLUME),
+            self.generate_tone(SCALE['doH'], 0.1, volume=VOLUME),
+            self.generate_tone(SCALE['si'], 0.1, volume=VOLUME),
+            self.generate_tone(0          , 0.2, volume=VOLUME),
+            self.generate_tone(SCALE['la'], 0.2, volume=VOLUME),
         ]
         # return [
-        #     self.generate_tone(SCALE['re'], 0.6, volume=0.3),
+        #     self.generate_tone(SCALE['reL'], 0.1, volume=VOLUME),
+        #     self.generate_tone(0          , 0.1, volume=VOLUME),
+        #     self.generate_tone(SCALE['reL'], 0.1, volume=VOLUME),
         # ]
 
     def play_sound(self, is_alive: bool, num: int = 0):
-        mute_tone = self.generate_tone(0, 0.5, volume=VOLUME)
         if is_alive:
             tones = self.generate_alive_sound(num)
         else:
             tones = self.generate_dead_sound()
-        audio_data = np.concatenate(tuple([mute_tone] + tones))
+        audio_data = np.concatenate(tuple(tones))
         self.play_obj = sa.play_buffer(audio_data, 1, 2, 44100)
         self.play_obj.wait_done()
 
